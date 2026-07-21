@@ -1,0 +1,130 @@
+<app-nav-tabs></app-nav-tabs>
+
+<main class="content">
+  <!-- Key Metrics -->
+  <section class="metrics-grid">
+    <div class="card metric-card">
+      <span class="metric-title">Total Spend</span>
+      <span class="metric-value">
+        {{ totalSpent$ | async | currency:'INR':'symbol':'1.2-2' }}
+      </span>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-title">This Month</span>
+      <span class="metric-value">
+        {{ currentMonthSpent$ | async | currency:'INR':'symbol':'1.2-2' }}
+      </span>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-title">Transactions</span>
+      <span class="metric-value">{{ totalCount$ | async }}</span>
+    </div>
+  </section>
+
+  <!-- Dashboard Grid -->
+  <section class="charts-grid">
+    <!-- Category Breakdown (Reverted to Progress Bars List) -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <h3>Category Breakdown</h3>
+        <p class="subtitle">Distribution of expenses across categories</p>
+      </div>
+
+      <div class="breakdown-list">
+        @if (categoryBreakdown$ | async; as breakdown) {
+          @for (item of breakdown; track item.key) {
+            <div class="breakdown-item">
+              <div class="item-info">
+                <span class="cat-name">{{ item.name }}</span>
+                <span class="cat-amount">
+                  {{ item.amount | currency:'INR':'symbol':'1.2-2' }}
+                  <small>({{ item.percentage }}%)</small>
+                </span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" [style.width.%]="item.percentage"></div>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-state">No category data available.</div>
+          }
+        } @else {
+          <div class="empty-state">Loading breakdown...</div>
+        }
+      </div>
+    </div>
+
+    <!-- Monthly Trend Line -->
+    <div
+      class="card chart-card clickable"
+      (click)="openEnlargedChart('monthly', 'Monthly Spending Trend')"
+    >
+      <div class="card-header">
+        <h3>Monthly Spending Trend</h3>
+        <span class="expand-badge">🔍 Click to enlarge</span>
+      </div>
+      <div class="canvas-container">
+        <canvas #monthlyCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Payment Method Distribution -->
+    <div
+      class="card chart-card clickable"
+      (click)="openEnlargedChart('payment', 'Payment Method Distribution')"
+    >
+      <div class="card-header">
+        <h3>Payment Method Distribution</h3>
+        <span class="expand-badge">🔍 Click to enlarge</span>
+      </div>
+      <div class="canvas-container">
+        <canvas #paymentCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Day of Week Habits -->
+    <div
+      class="card chart-card clickable"
+      (click)="openEnlargedChart('dayOfWeek', 'Day of Week Habits')"
+    >
+      <div class="card-header">
+        <h3>Day of Week Habits</h3>
+        <span class="expand-badge">🔍 Click to enlarge</span>
+      </div>
+      <div class="canvas-container">
+        <canvas #dayOfWeekCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Top Vendors Horizontal Bar -->
+    <div
+      class="card chart-card full-width clickable"
+      (click)="openEnlargedChart('vendors', 'Top Merchants & Vendors')"
+    >
+      <div class="card-header">
+        <h3>Top Merchants & Vendors</h3>
+        <span class="expand-badge">🔍 Click to enlarge</span>
+      </div>
+      <div class="canvas-container">
+        <canvas #vendorsCanvas></canvas>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Enlarged Chart Modal Overlay -->
+@if (selectedChartType) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ selectedChartTitle }}</h2>
+        <button class="close-btn" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-canvas-container">
+        <canvas #modalCanvas></canvas>
+      </div>
+    </div>
+  </div>
+}

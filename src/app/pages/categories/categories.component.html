@@ -1,0 +1,65 @@
+<app-nav-tabs></app-nav-tabs>
+
+<main class="content">
+  <header class="section-header">
+    <div>
+      <h2>Expense Categories</h2>
+      <p class="subtitle">Select a category to view its associated expenses</p>
+    </div>
+
+    <button
+      type="button"
+      class="sync-btn"
+      [disabled]="expenseService.isSyncing$ | async"
+      (click)="onSync()"
+    >
+      @if (expenseService.isSyncing$ | async) {
+        <span>⏳ Syncing...</span>
+      } @else {
+        <span>🔄 Sync Data</span>
+      }
+    </button>
+  </header>
+
+  @if (categoryStats$ | async; as categories) {
+    <div class="categories-grid">
+      @for (cat of categories; track cat.key) {
+        <a
+          [routerLink]="['/expenses']"
+          [queryParams]="{ category: cat.key }"
+          class="category-card"
+        >
+          <div class="card-image-wrapper">
+            <img
+              [src]="cat.imageUrl || 'https://via.placeholder.com/300x160?text=Category'"
+              [alt]="cat.categoryName"
+              class="card-image"
+            />
+          </div>
+
+          <div class="card-content">
+            <div class="card-header">
+              <h3 class="category-title">{{ cat.categoryName }}</h3>
+              <span class="count-badge">{{ cat.expenseCount }} items</span>
+            </div>
+
+            <div class="card-footer">
+              <span class="total-label">Total Spent</span>
+              <span class="total-amount">
+                {{ cat.totalAmount | currency:'INR':'symbol':'1.2-2' }}
+              </span>
+            </div>
+          </div>
+        </a>
+      } @empty {
+        <div class="empty-state">
+          <p>No categories found.</p>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="loading-state">
+      <p>Loading categories...</p>
+    </div>
+  }
+</main>

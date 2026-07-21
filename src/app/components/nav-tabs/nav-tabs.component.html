@@ -1,0 +1,20 @@
+<header class="navbar">
+  <div class="brand">
+    <h1>Expense Tracker</h1>
+  </div>
+
+  <nav class="tab-nav">
+    <a routerLink="/dashboard" routerLinkActive="active" class="tab-btn"> 📊 Dashboard </a>
+    <a routerLink="/categories" routerLinkActive="active" class="tab-btn"> 🏷️ Categories </a>
+    <a routerLink="/expenses" routerLinkActive="active" class="tab-btn"> 💳 Expenses </a>
+  </nav>
+
+  <div class="user-profile" *ngIf="authService.user$ | async as user">
+    <img
+      [src]="user.photoURL || 'https://via.placeholder.com/36'"
+      alt="Avatar"
+      class="avatar"
+    />
+    <button class="logout-btn" (click)="authService.logout()">Logout</button>
+  </div>
+</header>

@@ -1,0 +1,143 @@
+<app-nav-tabs></app-nav-tabs>
+
+<main class="content">
+  <div class="card table-card">
+    <!-- Header with Summary Banner -->
+    <div class="table-header">
+      <div>
+        <h2>Expense Ledger</h2>
+        <p class="subtitle">View and filter all recorded transactions</p>
+      </div>
+
+      <div class="header-right">
+        @if (selectedCategory$ | async; as selectedCategory) {
+          <div class="filter-badge">
+            <span>Filtered by: <strong>{{ selectedCategory.name }}</strong></span>
+            <a routerLink="/expenses" class="clear-filter-btn" title="Clear Category Filter">✕</a>
+          </div>
+        }
+
+        <div class="total-summary-card">
+          <span class="summary-label">Total Expense</span>
+          <span class="summary-amount">
+            {{ (totalExpenseAmount$ | async) || 0 | currency:'INR':'symbol':'1.2-2' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Control Toolbar -->
+    <div class="filter-toolbar">
+      <!-- Quick Date Presets -->
+      <div class="filter-group">
+        <label class="filter-label">Date Preset</label>
+        <select
+          class="form-control"
+          [ngModel]="selectedPreset"
+          (ngModelChange)="onPresetChange($event)">
+          <option value="all">All Time</option>
+          <option value="today">Today</option>
+          <option value="this_month">This Month</option>
+          <option value="last_month">Last Month</option>
+          <option value="this_year">This Year</option>
+          <option value="custom">Custom Range</option>
+        </select>
+      </div>
+
+      <!-- Custom Date Pickers -->
+      <div class="filter-group date-inputs">
+        <label class="filter-label">Start Date</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="customStart"
+          (change)="onCustomDateChange()" />
+      </div>
+
+      <div class="filter-group date-inputs">
+        <label class="filter-label">End Date</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="customEnd"
+          (change)="onCustomDateChange()" />
+      </div>
+
+      <!-- Payment Method Filter -->
+      <div class="filter-group">
+        <label class="filter-label">Payment Method</label>
+        <select
+          class="form-control"
+          [ngModel]="selectedPaymentMethod"
+          (ngModelChange)="onPaymentMethodChange($event)">
+          <option value="">All Methods</option>
+          @for (method of paymentMethods$ | async; track method.key) {
+            <option [value]="method.key">{{ method.paymentMethod }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Reset Controls -->
+      <div class="filter-group reset-group">
+        <button type="button" class="reset-btn" (click)="resetFilters()">
+          Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      @if (filteredExpenses$ | async; as expenses) {
+        <table>
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Spent On</th>
+            <th>Category</th>
+            <th>Payment Method</th>
+            <th class="amount-col">Amount</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (item of expenses; track item.key) {
+              <tr>
+                <td class="date-col">{{ item.created | date:'mediumDate' }}</td>
+                <td class="spent-on-col">
+                  @if (item.spentOn) {
+                    <span class="spent-on-text">{{ item.spentOn }}</span>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </td>
+                <td>
+                  <a
+                    [routerLink]="['/expenses']"
+                    [queryParams]="{ category: item.categoryKey }"
+                    class="badge category-badge category-link"
+                    [title]="'Filter by ' + item.categoryName"
+                  >
+                    {{ item.categoryName }}
+                  </a>
+                </td>
+                <td>
+                  @for (method of item.paymentMethodNames; track method) {
+                    <span class="badge payment-badge">{{ method }}</span>
+                  }
+                </td>
+                <td class="amount-col font-bold">
+                  {{ item.amount | currency:'INR':'symbol':'1.2-2' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-state">No expenses match the current filter selection.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <div class="empty-state">Loading expenses...</div>
+      }
+    </div>
+  </div>
+</main>
