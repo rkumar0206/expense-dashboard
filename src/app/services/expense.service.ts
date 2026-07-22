@@ -96,7 +96,7 @@ export class ExpenseService {
     dbPaymentMethods.forEach((item) => mergedPaymentMap.set(item.key, item));
 
     this.expenses$.next(expenses);
-    this.categories$.next(categories);
+    this.categories$.next(categories.sort((a, b) => b.modified - a.modified));
     this.paymentMethods$.next(Array.from(mergedPaymentMap.values()));
   }
 

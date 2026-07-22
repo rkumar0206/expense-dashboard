@@ -25,11 +25,13 @@
 
   <!-- Dashboard Grid -->
   <section class="charts-grid">
-    <!-- Category Breakdown (Reverted to Progress Bars List) -->
+    <!-- Category Breakdown (Progress Bars List) -->
     <div class="card chart-card">
       <div class="card-header">
-        <h3>Category Breakdown</h3>
-        <p class="subtitle">Distribution of expenses across categories</p>
+        <div>
+          <h3>Category Breakdown</h3>
+          <p class="subtitle">Distribution of expenses across categories</p>
+        </div>
       </div>
 
       <div class="breakdown-list">
@@ -53,6 +55,20 @@
         } @else {
           <div class="empty-state">Loading breakdown...</div>
         }
+      </div>
+    </div>
+
+    <!-- Current Month Category Spend (Doughnut Chart) -->
+    <div
+      class="card chart-card clickable"
+      (click)="openEnlargedChart('currentMonthCategory', 'Current Month Category Spend')"
+    >
+      <div class="card-header">
+        <h3>Current Month Category Spend</h3>
+        <span class="expand-badge">🔍 Click to enlarge</span>
+      </div>
+      <div class="canvas-container">
+        <canvas #categoryMonthCanvas></canvas>
       </div>
     </div>
 
@@ -109,6 +125,80 @@
       </div>
       <div class="canvas-container">
         <canvas #vendorsCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Financial Year Monthly Spending (Horizontal Bar) -->
+    <div class="card chart-card full-width">
+      <div class="card-header header-with-actions">
+        <div>
+          <h3>Financial Year Spending</h3>
+          <p class="subtitle">Monthly totals for April – March</p>
+        </div>
+        <div class="header-controls">
+          <select
+            class="fy-select"
+            [value]="selectedFinancialYear"
+            (change)="onFinancialYearChange($event)"
+            (click)="$event.stopPropagation()"
+          >
+            @for (fy of availableFinancialYears; track fy) {
+              <option [value]="fy">{{ fy }}</option>
+            }
+          </select>
+          <span
+            class="expand-badge clickable"
+            (click)="openEnlargedChart('financialYear', 'Financial Year Spending (' + selectedFinancialYear + ')')"
+          >
+            🔍 Click to enlarge
+          </span>
+        </div>
+      </div>
+      <div class="canvas-container fy-canvas-container">
+        <canvas #fyCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- Monthly Category Spending Chart -->
+    <div class="card chart-card full-width">
+      <div class="card-header header-with-actions">
+        <div>
+          <h3>Monthly Category Spending</h3>
+          <p class="subtitle">Monthly spending per category for selected year</p>
+        </div>
+        <div class="header-controls">
+          <select
+            class="fy-select"
+            [value]="selectedCategoryMonthlyCategory"
+            (change)="onCategoryMonthlyCategoryChange($event)"
+            (click)="$event.stopPropagation()"
+          >
+            @for (cat of categories$ | async; track cat.key) {
+              <option [value]="cat.key">{{ cat.categoryName }}</option>
+            }
+          </select>
+
+          <select
+            class="fy-select"
+            [value]="selectedCategoryMonthlyYear"
+            (change)="onCategoryMonthlyYearChange($event)"
+            (click)="$event.stopPropagation()"
+          >
+            @for (yr of availableCategoryMonthlyYears; track yr) {
+              <option [value]="yr">{{ yr }}</option>
+            }
+          </select>
+
+          <span
+            class="expand-badge clickable"
+            (click)="openEnlargedChart('categoryMonthly', 'Monthly Category Spending')"
+          >
+            🔍 Click to enlarge
+          </span>
+        </div>
+      </div>
+      <div class="canvas-container">
+        <canvas #categoryMonthlyCanvas></canvas>
       </div>
     </div>
   </section>
