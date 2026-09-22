@@ -4,6 +4,69 @@
   padding: 0 1.5rem;
 }
 
+/* Dashboard Header & Export Action */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .header-title {
+    h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      margin: 0.25rem 0 0 0;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+  }
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  &:hover:not(:disabled) {
+    background-color: #0369a1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  .icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+}
+
+/* Common Card Styling */
 .card {
   background: #ffffff;
   border: 1px solid #e2e8f0;

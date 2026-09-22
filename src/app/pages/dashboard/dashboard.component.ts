@@ -6,6 +6,7 @@ import { Chart, registerables } from 'chart.js';
 import { NavTabsComponent } from '../../components/nav-tabs/nav-tabs.component';
 import { ExpenseService } from '../../services/expense.service';
 import { FormattedExpense, ExpenseCategory, PaymentMethod } from '../../models/expense.model';
+import { ExportService } from '../../services/export.service';
 
 Chart.register(...registerables);
 
@@ -34,6 +35,8 @@ export type ChartType =
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
   private expenseService = inject(ExpenseService);
+  private exportService = inject(ExportService);
+  public isExporting = false;
   private sub = new Subscription();
 
   // Cached data for modal re-rendering
@@ -752,5 +755,16 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
         },
       },
     });
+  }
+
+  public async onExport(): Promise<void> {
+    try {
+      this.isExporting = true;
+      await this.exportService.exportUserData();
+    } catch (err) {
+      console.error('Failed to export data:', err);
+    } finally {
+      this.isExporting = false;
+    }
   }
 }

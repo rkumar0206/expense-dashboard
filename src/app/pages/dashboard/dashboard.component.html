@@ -1,6 +1,18 @@
 <app-nav-tabs></app-nav-tabs>
 
 <main class="content">
+  <!-- Page Header & Actions -->
+  <header class="dashboard-header">
+    <div class="header-title">
+      <h2>Dashboard Overview</h2>
+      <p class="subtitle">Real-time analytics and financial summary</p>
+    </div>
+    <button class="btn-export" [disabled]="isExporting" (click)="onExport()">
+      <span class="icon">📥</span>
+      <span>{{ isExporting ? 'Exporting...' : 'Export Backup (.json.gz)' }}</span>
+    </button>
+  </header>
+
   <!-- Key Metrics -->
   <section class="metrics-grid">
     <div class="card metric-card">
