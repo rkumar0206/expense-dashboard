@@ -10,6 +10,7 @@ export interface ExportCategory {
   isSynced: boolean;
   created: string;
   modified: string;
+  key: string;
 }
 
 export interface ExportExpense {
@@ -20,6 +21,8 @@ export interface ExportExpense {
   isSynced: boolean;
   created: string;
   modified: string;
+  categoryKey: string;
+  key: string;
 }
 
 export interface ExportPayload {
@@ -60,6 +63,7 @@ export class ExportService {
     const defaultDate = new Date().toISOString();
 
     return categories.map((cat) => ({
+      key: cat.key,
       name: cat.categoryName || '',
       description: cat.categoryDescription || '',
       imageUrl: cat.imageUrl || '',
@@ -79,6 +83,8 @@ export class ExportService {
     const defaultDate = new Date().toISOString();
 
     return expenses.map((exp) => ({
+      key: exp.key,
+      categoryKey: exp.categoryKey,
       spentOn: exp.spentOn || '',
       amount: exp.amount || 0,
       categoryName: categoryMap.get(exp.categoryKey) || exp.categoryKey || 'Others',
